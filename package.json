@@ -1,7 +1,7 @@
 {
   "name": "hsimulaciones",
   "version": "1.0.0",
-  "description": "",
+  "description": "Sistema de agendamiento de turnos para las salas de simulaciones",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js"
@@ -10,14 +10,20 @@
     "type": "git",
     "url": "git+https://github.com/luis2201/hsimulaciones.git"
   },
-  "author": "",
+  "author": "Ing. Luis Pincay",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/luis2201/hsimulaciones/issues"
   },
   "homepage": "https://github.com/luis2201/hsimulaciones#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.21.2",
+    "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
     "nodemon": "^3.1.9"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.7"
   }
 }
