@@ -1,93 +1,58 @@
 const mysql = require('mysql');
-const config = require('../config');
+const path = require('path');
+const config = require(path.join(__dirname, '../config'));
 
-const dbconfig = {
+
+const pool = mysql.createPool({
+    connectionLimit: 10, // Control de conexiones simultáneas
     host: config.mysql.host,
     user: config.mysql.user,
     password: config.mysql.password,
     database: config.mysql.database
-}
+});
 
-let conexion; 
-
-function conMysql(){
-    conexion = mysql.createConnection(dbconfig);
-
-    conexion.connect((err) => {
-        if(err){
-            console.log('[db err]', err);
-            setTimeout(conMysql, 200);
-        } else{
-            console.log('BD conectada')
-        }
-    });
-
-    conexion.on('error', err => {
-        console.log('[db err]', err);
-
-        if(err.code === 'PROTOCOL_CONNECTION_LOST'){
-            conMysql();
-        } else{
-            throw err;
-        }
+// Función genérica para ejecutar consultas
+function executeQuery(sql, params = []) {
+    return new Promise((resolve, reject) => {
+        pool.query(sql, params, (error, result) => {
+            if (error) {
+                console.error('[DB Error]', error);
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
     });
 }
 
-conMysql();
+async function getAuthData(Usuario) {
+    const sql = `
+        SELECT u.ID, a.Usuario, a.Password, u.Estado 
+        FROM hs_auth a 
+        JOIN hs_usuario u ON a.ID = u.ID 
+        WHERE a.Usuario = ?;
+    `;
 
-function FindAll(table) {
-    return new Promise( (resolve, reject) => {
-        conexion.query(`SELECT * FROM ${table}`, (error, result) => {
-            return error ? reject(error) : resolve(result);
-        })
-    });
+    return executeQuery(sql, [Usuario]);
 }
 
-function FindID(table, ID){
-    return new Promise( (resolve, reject) => {
-        conexion.query(`SELECT * FROM ${table} WHERE ID = ${ID}`, (error, result) => {
-            return error ? reject(error) : resolve(result);
-        })
-    });
-}
+// Métodos de Base de Datos
+const db = {
+    FindAll: (table) => executeQuery(`SELECT * FROM ??`, [table]),
 
-function insert(table, data){
-    return new Promise( (resolve, reject) => {
-        conexion.query(`INSERT INTO ${table} SET ?`, data, (error, result) => {
-            return error ? reject(error) : resolve(result);
-        })
-    });
-}
+    FindID: (table, ID) => executeQuery(`SELECT * FROM ?? WHERE ID = ?`, [table, ID]),
 
+    Add: (table, data) => executeQuery(`INSERT INTO ?? SET ? ON DUPLICATE KEY UPDATE ?`, [table, data, data]),
 
-function update(table, data){
-    return new Promise( (resolve, reject) => {
-        conexion.query(`UPDATE ${table} SET ? WHERE ID = ?`, [data, data.ID], (error, result) => {
-            return error ? reject(error) : resolve(result);
-        })
-    });
-}
+    Delete: (table, ID) => executeQuery(`DELETE FROM ?? WHERE ID = ?`, [table, ID]),
 
-function Add(table, data){
-    if (data && data.ID == 0) {
-        console.log(data);
-        return insert(table, data);
-    } else {
-        return update(table, data);
-    }
-}
+    Query: (table, query) => executeQuery(`SELECT * FROM ?? WHERE ?`, [table, query])
+        .then(result => result.length > 0 ? result[0] : null),
 
-function Delete(table, data){
-    return new Promise( (resolve, reject) => {
-        conexion.query(`DELETE FROM ${table} WHERE ID = ?`, data.ID, (error, result) => {
-            return error ? reject(error) : resolve(result);
-        })
-    });
-}
+    executeQuery,
 
-module.exports = {
-    FindAll,
-    FindID,
-    Add,
-    Delete
-}
+    getAuthData
+};
+
+// Exportamos la conexión optimizada
+module.exports = db;

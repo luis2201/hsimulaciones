@@ -1,9 +1,7 @@
-function error (message, code) {
-    let e = new Error(message);
-
-    if(code){
-        e.statusCode = code;
-    }
+function createError(message, code = 500) {
+    const error = new Error(message);
+    error.statusCode = code;
+    return error;
 }
 
-module.exports = error;
+module.exports = createError;

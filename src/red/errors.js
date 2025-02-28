@@ -1,7 +1,7 @@
 const respuesta = require('./respuestas');
 
 function errors(err, req, res, next) {
-    console.error('[error', err);
+    console.error(`❌ Error: ${err.message}`); // Solo muestra el mensaje en la terminal
 
     const message = err.message || 'Error interno';
     const status = err.statusCode || 500;
