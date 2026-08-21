@@ -15,8 +15,7 @@ const UsuarioForm = () => {
   const [usuario, setUsuario] = useState({
     Nombres: '',
     Usuario: '',
-    Rol: 'USUARIO',
-    Password: ''
+    Rol: 'USUARIO'
   });
 
   useEffect(() => {
@@ -72,25 +71,11 @@ const UsuarioForm = () => {
       return;
     }
   
-    if (!id && usuario.Password.trim().length < 8) {
-      MySwal.fire({
-        icon: 'warning',
-        title: 'Contraseña Inválida',
-        text: 'La contraseña debe tener al menos 8 caracteres.',
-        confirmButtonColor: '#FF5733', // Rojo
-      });
-      return;
-    }
-  
     let datosEnviar = {
       Nombres: usuario.Nombres.trim(),
       Usuario: usuario.Usuario.trim(),
       Rol: usuario.Rol.toUpperCase()
     };
-  
-    if (!id) {
-      datosEnviar.Password = usuario.Password.trim();
-    }
   
     try {
       let response;
@@ -158,19 +143,6 @@ const UsuarioForm = () => {
             />
           </div>
 
-          {!id && (
-            <div>
-              <label className="block text-gray-700 font-medium">Contraseña</label>
-              <input
-                type="password"
-                name="Password"
-                value={usuario.Password}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-lg text-gray-700 focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          )}
-
           <div>
             <label className="block text-gray-700 font-medium">Rol</label>
             <select
@@ -178,9 +150,9 @@ const UsuarioForm = () => {
               value={usuario.Rol}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg text-lg text-gray-700 focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="ADMIN">ADMIN</option>
+            >              
               <option value="USUARIO">USUARIO</option>
+              <option value="DOCENTE">DOCENTE</option>
             </select>
           </div>
 

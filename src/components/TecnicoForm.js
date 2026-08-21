@@ -96,13 +96,13 @@ const TecnicoForm = () => {
         <Layout>
             <div className="max-w-lg mx-auto bg-white shadow-md rounded-lg p-6 border relative">
                 <div className="bg-gradient-to-r from-blue-600 to-blue-400 text-white text-center py-3 rounded-t-lg relative">
-                <h2 className="text-xl font-bold">{id ? 'Editar Técnico' : 'Registro de Técnico'}</h2>
-                <button 
-                    onClick={() => navigate('/tecnicos')} 
-                    className="absolute top-3 right-3 text-white hover:text-gray-300"
-                >
-                    <FontAwesomeIcon icon={faTimes} size="lg" />
-                </button>
+                    <h2 className="text-xl font-bold">{id ? 'Editar Técnico' : 'Registro de Técnico'}</h2>
+                    <button 
+                        onClick={() => navigate('/tecnicos')} 
+                        className="absolute top-3 right-3 text-white hover:text-gray-300"
+                    >
+                        <FontAwesomeIcon icon={faTimes} size="lg" />
+                    </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4 mt-4">

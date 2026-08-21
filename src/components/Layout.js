@@ -33,7 +33,15 @@ const Layout = ({ children }) => {
           ...item,
           submenus: menuData.filter(sub => sub.ParentID === item.ID)
         }))
-        .filter(item => item.ParentID === null);
+        .filter(item => item.ParentID === null)
+        .sort((a, b) => {
+          const aEsDashboard = a.Ruta === '/dashboard' || a.Menu?.toLowerCase() === 'dashboard';
+          const bEsDashboard = b.Ruta === '/dashboard' || b.Menu?.toLowerCase() === 'dashboard';
+
+          if (aEsDashboard && !bEsDashboard) return -1;
+          if (!aEsDashboard && bEsDashboard) return 1;
+          return 0;
+        });
       
       setMenu(structuredMenu);
 
